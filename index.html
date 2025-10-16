@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-KR13XDHKHX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-KR13XDHKHX');
+</script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 프롬프트 완전 가이드</title>
+    
+    <!-- Google Analytics 삽입 위치 (나중에 추가) -->
+    <!-- Google tag (gtag.js) -->
+    <!-- 
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
+    </script>
+    -->
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary-color: #2563EB;
+            --sidebar-bg: #1E293B;
+            --content-bg: #F8FAFC;
+            --text-color: #334155;
+            --border-color: #E2E8F0;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background: var(--content-bg);
+        }
+        
+        /* 헤더 */
+        .header {
+            background: white;
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .search-box {
+            flex: 1;
+            max-width: 500px;
+            position: relative;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94A3B8;
+        }
+        
+        /* 레이아웃 */
+        .container {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        /* 사이드바 */
+        .sidebar {
+            width: 280px;
+            background: var(--sidebar-bg);
+            min-height: calc(100vh - 73px);
+            padding: 2rem 0;
+            position: sticky;
+            top: 73px;
+            overflow-y: auto;
+        }
+        
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+        
+        .nav-title {
+            color: #94A3B8;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .nav-item {
+            color: #E2E8F0;
+            padding: 0.75rem 1.5rem;
+            display: block;
+            text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+        }
+        
+        .nav-item:hover {
+            background: rgba(255,255,255,0.05);
+            border-left-color: var(--primary-color);
+        }
+        
+        .nav-item.active {
+            background: rgba(37, 99, 235, 0.15);
+            border-left-color: var(--primary-color);
+            color: white;
+        }
+        
+        /* 메인 콘텐츠 */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+        }
+        
+        .content-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: none;
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+        
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #0F172A;
+        }
+        
+        .section-subtitle {
+            color: #64748B;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+        
+        /* 프롬프트 카드 */
+        .prompt-card {
+            background: #F8FAFC;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .prompt-card h3 {
+            margin-bottom: 1rem;
+            color: #0F172A;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .prompt-text {
+            background: white;
+            padding: 1rem;
+            border-radius: 6px;
+            border-left: 4px solid var(--primary-color);
+            margin: 1rem 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            position: relative;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+        
+        .copy-btn:hover {
+            background: #1D4ED8;
+            transform: translateY(-1px);
+        }
+        
+        .copy-btn.copied {
+            background: #10B981;
+        }
+        
+        /* 검색 결과 하이라이트 */
+        .highlight {
+            background: yellow;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        /* 단어집 그리드 */
+        .vocab-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .vocab-item {
+            background: #F8FAFC;
+            padding: 1rem;
+            border-radius: 6px;
+            border-left: 3px solid var(--primary-color);
+        }
+        
+        .vocab-term {
+            font-weight: bold;
+            color: #0F172A;
+            margin-bottom: 0.25rem;
+        }
+        
+        .vocab-desc {
+            font-size: 0.85rem;
+            color: #64748B;
+        }
+        
+        /* 팁 박스 */
+        .tip-box {
+            background: #FEF3C7;
+            border-left: 4px solid #F59E0B;
+            padding: 1rem 1.5rem;
+            border-radius: 6px;
+            margin: 1.5rem 0;
+        }
+        
+        .tip-box strong {
+            color: #D97706;
+        }
+        
+        /* 반응형 */
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .search-box {
+                max-width: 100%;
+            }
+            
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .content-section {
+                padding: 1.5rem;
+            }
+            
+            .vocab-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* 로딩 */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #64748B;
+        }
+        
+        /* 검색 결과 없음 */
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            color: #64748B;
+        }
+        
+        .welcome-section {
+            text-align: center;
+            padding: 3rem 1rem;
+        }
+        
+        .welcome-section h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #0F172A;
+        }
+        
+        .welcome-section p {
+            font-size: 1.2rem;
+            color: #64748B;
+            margin-bottom: 2rem;
+        }
+        
+        .quick-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .quick-link-card {
+            background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+        
+        .quick-link-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .quick-link-card h3 {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- 헤더 -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">🤖 AI 프롬프트 가이드</div>
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" 
+                       class="search-input" 
+                       id="searchInput" 
+                       placeholder="검색어를 입력하세요... (예: 회의, 보고서, 템플릿)">
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <!-- 사이드바 -->
+        <aside class="sidebar">
+            <nav>
+                <div class="nav-section">
+                    <div class="nav-title">시작하기</div>
+                    <a class="nav-item" data-section="welcome">📖 가이드 소개</a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-title">Part 1: 긴급 가이드</div>
+                    <a class="nav-item" data-section="part1-terms">📇 용어 카드</a>
+                    <a class="nav-item" data-section="part1-methods">💬 질문하는 3가지 방법</a>
+                    <a class="nav-item" data-section="part1-formula">📐 질문 만드는 공식</a>
+                    <a class="nav-item" data-section="part1-templates">⚡ 바로 쓰는 템플릿</a>
+                    <a class="nav-item" data-section="part1-troubleshoot">🔧 문제 해결법</a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-title">Part 2: 학습 스타일별</div>
+                    <a class="nav-item" data-section="part2-fast">🚀 빠른 학습 스타일</a>
+                    <a class="nav-item" data-section="part2-practical">💼 실무 중심 스타일</a>
+                    <a class="nav-item" data-section="part2-step">🌱 단계별 학습 스타일</a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-title">Part 3: 고급 기법</div>
+                    <a class="nav-item" data-section="part3-techniques">🎓 고급 프롬프트 기법</a>
+                    <a class="nav-item" data-section="part3-business">💼 업무 상황별</a>
+                    <a class="nav-item" data-section="part3-creative">🎨 창의적 활용</a>
+                    <a class="nav-item" data-section="part3-tips">💡 문제 해결 & 팁</a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-title">부록</div>
+                    <a class="nav-item" data-section="appendix">📚 빈칸 채우기 단어집</a>
+                </div>
+            </nav>
+        </aside>
+        
+        <!-- 메인 콘텐츠 -->
+        <main class="main-content">
+            <!-- 환영 섹션 -->
+            <section class="content-section active" id="welcome">
+                <div class="welcome-section">
+                    <h1>🎉 AI 프롬프트 완전 가이드에 오신 것을 환영합니다!</h1>
+                    <p>AI와 대화하는 모든 방법이 여기에 있습니다</p>
+                    
+                    <div class="quick-links">
+                        <div class="quick-link-card" data-section="part1-terms">
+                            <h3>🆕 처음 시작하시나요?</h3>
+                            <p>긴급 가이드로 시작하세요</p>
+                        </div>
+                        <div class="quick-link-card" data-section="part2-fast">
+                            <h3>⚡ 빠르게 배우고 싶으세요?</h3>
+                            <p>학습 스타일별 가이드 보기</p>
+                        </div>
+                        <div class="quick-link-card" data-section="part3-techniques">
+                            <h3>🎯 전문가가 되고 싶으세요?</h3>
+                            <p>고급 기법 마스터하기</p>
+                        </div>
+                        <div class="quick-link-card" data-section="appendix">
+                            <h3>📖 단어가 생각 안 나세요?</h3>
+                            <p>단어집에서 찾아보기</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tip-box" style="margin-top: 3rem; text-align: left;">
+                        <strong>💡 사용 팁:</strong><br>
+                        • 상단 검색창에서 원하는 내용을 빠르게 찾을 수 있어요<br>
+                        • 각 프롬프트 옆의 "복사" 버튼으로 바로 사용하세요<br>
+                        • 모바일에서도 언제든 접속 가능합니다<br>
+                        • 자주 사용하는 페이지는 즐겨찾기 해두세요
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Part 1: 용어 카드 -->
+            <section class="content-section" id="part1-terms">
+                <h2 class="section-title">📇 AI 용어 카드</h2>
+                <p class="section-subtitle">꼭 알아야 할 10가지 핵심 용어</p>
+                
+                <div class="prompt-card">
+                    <h3>1️⃣ 프롬프트 (Prompt)</h3>
+                    <p><strong>의미:</strong> AI에게 보내는 질문이나 명령어</p>
+                    <p><strong>예시:</strong> "회의록을 요약해줘" ← 이것이 프롬프트</p>
+                </div>
+                
+                <div class="prompt-card">
+                    <h3>2️⃣ ChatGPT</h3>
+                    <p><strong>의미:</strong> 대화형 AI 서비스 (챗봇의 일종)</p>
+                    <p><strong>비유:</strong> 책을 다 읽어본 똑똑한 비서</p>
+                </div>
+                
+                <div class="prompt-card">
+                    <h3>3️⃣ 맥락 (Context)</h3>
+                    <p><strong>의미:</strong> AI가 답변을 이해하기 위해 필요한 배경 정보</p>
+                    <p><strong>예시:</strong> "저는 직장인이고, 업무 보고서를 써야 해요" ← 맥락 제공</p>
+                </div>
+                
+                <div class="prompt-card">
+                    <h3>4️⃣ 토큰 (Token)</h3>
+                    <p><strong>의미:</strong> AI가 이해하는 텍스트의 단위 (대략 단어 하나)</p>
+                    <p><strong>왜 중요?:</strong> 한 번에 처리할 수 있는 토큰 수가 제한되어 있음</p>
+                </div>
+                
+                <div class="prompt-card">
+                    <h3>5️⃣ 생성형 AI (Generative AI)</h3>
+                    <p><strong>의미:</strong> 새로운 콘텐츠를 만들어내는 AI</p>
+                    <p><strong>예시:</strong> 글쓰기, 그림 그리기, 코드 작성 등</p>
+                </div>
+                
+                <div class="prompt-card">
+                    <h3>6️⃣ 프롬프트 엔지니어링</h3>
+                    <p><strong>의미:</strong> AI에게 효과적으로 질문하는 기술</p>
+                    <p><strong>비유:</strong> AI와 잘 대화하는 방법</p>
+                </div>
+                
+                <div class="prompt-card">
+                    <h3>7️⃣ 할루시네이션 (Hallucination)</h3>
+                    <p><strong>의미:</strong> AI가 사실이 아닌 정보를 그럴듯하게 만들어내는 현상</p>
+                    <p><strong>주의:</strong> 중요한 정보는 반드시 검증이 필요해요</p>
+                </div>
+                
+                <div class="prompt-card">
+                    <h3>8️⃣ 온도 (Temperature)</h3>
+                    <p><strong>의미:</strong> AI 답변의 창의성 정도를 조절하는 설정</p>
+                    <p><strong>낮으면:</strong> 정확하고 일관된 답변 / <strong>높으면:</strong> 창의적이고 다양한 답변</p>
+                </div>
+                
+                <div class="prompt-card">
+                    <h3>9️⃣ 퓨샷 러닝 (Few-shot Learning)</h3>
+                    <p><strong>의미:</strong> 몇 가지 예시를 보여주고 패턴을 학습시키는 방법</p>
+                    <p><strong>예시:</strong> "이런 형식으로 써줘" 하고 예시 2-3개 제공</p>
+                </div>
+                
+                <div class="prompt-card">
+                    <h3>🔟 체인 (Chain)</h3>
+                    <p><strong>의미:</strong> 여러 단계의 프롬프트를 연결해서 사용하는 것</p>
+                    <p><strong>예시:</strong> 1단계 요약 → 2단계 분석 → 3단계 제안</p>
+                </div>
+            </section>
+            
+            <!-- Part 1: 질문하는 3가지 방법 -->
+            <section class="content-section" id="part1-methods">
+                <h2 class="section-title">💬 질문하는 3가지 방법</h2>
+                <p class="section-subtitle">상황에 맞는 질문 방식 선택하기</p>
+                
+                <div class="prompt-card">
+                    <h3>🟢 방법 1: 직접 질문 (가장 기본)</h3>
+                    <p><strong>언제:</strong> 간단한 정보가 필요할 때</p>
+                    <div class="prompt-text">
+                        • "프로젝트 관리 도구 추천해줘"<br>
+                        • "마케팅 전략이 뭐야?"<br>
+                        • "Python으로 데이터 분석하는 방법 알려줘"
+                        <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+                    </div>
+                </div>
+                
+                <div class="prompt-card">
+                    <h3>🟡 방법 2: 맥락 + 질문 (추천)</h3>
+                    <p><strong>언제:</strong> 나에게 맞는 구체적인 답이 필요할 때</p>
+                    <div class="prompt-text">
+                        나는 [상황]이야.<br>
+                        [문제/목표]가 있는데,<br>
+                        [원하는 것]을 알려줘.
+                        <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+                    </div>
+                    <p><strong>예시:</strong></p>
+                    <div class="prompt-text">
+                        나는 신입사원 교육을 담당하는 직원이야.<br>
+                        교육 자료가 너무 이론적이라 학습자들이 지루해하는 문제가 있는데,<br>
+                        실습 중심의 참여형 교육 방법을 알려줘.
+                        <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+                    </div>
+                </div>
+                
+                <div class="prompt-card">
+                    <h3>🔴 방법 3: 역할 부여 + 질문 (고급)</h3>
+                    <p><strong>언제:</strong> 전문가의 관점이 필요할 때</p>
+                    <div class="prompt-text">
+                        너는 [전문가]야.<br>
+                        [상황]에 대해<br>
+                        [관점]으로 [원하는 것]을 해줘.
+                        <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+                    </div>
+                    <p><strong>예시:</strong></p>
+                    <div class="prompt-text">
+                        너는 20년 경력의 마케팅 전문가야.<br>
+                        신제품 출시 전략에 대해<br>
+                        데이터 기반 관점으로 분석하고 실행 가능한 방안을 3가지 제안해줘.
+                        <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+                    </div>
+                </div>
+                
+                <div class="tip-box">
+                    <strong>💡 팁:</strong> 처음엔 방법 1로 시작하고, 답변이 마음에 안 들면 방법 2나 3으로 다시 질문해보세요!
+                </div>
+            </section>
+            
+            <!-- Part 3: 고급 프롬프트 기법 -->
+            <section class="content-section" id="part3-techniques">
+                <h2 class="section-title">🎓 고급 프롬프트 기법</h2>
+                <p class="section-subtitle">전문가처럼 AI를 다루는 핵심 테크닉</p>
+                
+                <div class="prompt-card">
+                    <h3>🔗 1. 프롬프트 체이닝 (Chaining)</h3>
+                    <p><strong>설명:</strong> 큰 작업을 여러 단계로 쪼개서, 각 단계의 결과를 다음 단계의 입력으로 사용</p>
+                    <p><strong>언제 사용:</strong> 보고서, 기획서, 복잡한 분석</p>
+                    <div class="prompt-text">
+                        <strong>1단계:</strong> "다음 데이터의 핵심 패턴 3가지를 찾아줘: [데이터]"<br>
+                        → AI가 패턴 3가지 제시<br><br>
+                        <strong>2단계:</strong> "위에서 찾은 첫 번째 패턴에 대해, 원인과 시사점을 분석해줘"<br>
+                        → AI가 깊이 있는 분석 제공<br><br>
+                        <strong>3단계:</strong> "이 분석을 바탕으로 경영진 보고서 초안을 작성해줘. 분량 2페이지, 전문적인 톤"
+                        <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+                    </div>
+                </div>
+                
+                <div class="prompt-card">
+                    <h3>🎭 2. 페르소나 활용 (Role Playing)</h3>
+                    <p><strong>설명:</strong> AI에게 특정 전문가의 역할을 맡겨서, 그 관점에서 답변하게 하는 방법</p>
+                    <p><strong>언제 사용:</strong> 다각도 검토, 중요한 의사결정</p>
+                    <div class="prompt-text">
+                        <strong>마케터 역할:</strong> "너는 20년 경력의 마케팅 전문가야. 신제품 출시 전략을 고객 관점에서 평가해줘."<br><br>
+                        <strong>재무 담당자 역할:</strong> "너는 재무 담당자야. 같은 전략을 비용과 ROI 관점에서 검토해줘."<br><br>
+                        <strong>리스크 관리자 역할:</strong> "너는 리스크 관리 전문가야. 이 전략의 잠재적 위험 요소를 찾아줘."
+                        <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+                    </div>
+                </div>
+                
+                <div class="prompt-card">
+                    <h3>🎯 3. 제약 조건 설정</h3>
+                    <p><strong>설명:</strong> "이것만 해줘", "이건 하지 마" 같은 명확한 경계를 설정</p>
+                    <div class="prompt-text">
+                        "직원 복지 향상 아이디어를 10가지 제안해줘.<br><br>
+                        <strong>제약 조건:</strong><br>
+                        - 예산: 1인당 월 5만원 이내<br>
+                        - 실행 기간: 3개월 이내 가능한 것<br>
+                        - 제외: 금전 지급, 업무시간 단축 관련<br>
+                        - 포함: 직원이 직접 체감할 수 있는 것<br>
+                        - 형식: 표로 정리 (아이디어명, 예상 비용, 실행 난이도)"
+                        <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 부록: 단어집 -->
+            <section class="content-section" id="appendix">
+                <h2 class="section-title">📚 프롬프트 빈칸 채우기 단어집</h2>
+                <p class="section-subtitle">막막할 때 참고하는 선택지 모음</p>
+                
+                <div class="prompt-card">
+                    <h3>📋 1. 형식 (Format)</h3>
+                    <p>결과물을 어떤 형태로 받고 싶은지 선택하세요</p>
+                    <div class="vocab-grid">
+                        <div class="vocab-item">
+                            <div class="vocab-term">표</div>
+                            <div class="vocab-desc">비교할 때</div>
+                        </div>
+                        <div class="vocab-item">
+                            <div class="vocab-term">bullet point</div>
+                            <div class="vocab-desc">나열할 때</div>
+                        </div>
+                        <div class="vocab-item">
+                            <div class="vocab-term">단계별</div>
+                            <div class="vocab-desc">순서가 있을 때</div>
+                        </div>
+                        <div class="vocab-item">
+                            <div class="vocab-term">문단</div>
+                            <div class="vocab-desc">설명할 때</div>
+                        </div>
+                        <div class="vocab-item">
+                            <div class="vocab-term">체크리스트</div>
+                            <div class="vocab-desc">확인 항목</div>
+                        </div>
+                        <div class="vocab-item">
+                            <div class="vocab-term">요약</div>
+                            <div class="vocab-desc">핵심만</div>
+                        </div>
+                        <div class="vocab-item">
+                            <div class="vocab-term">타임라인</div>
+                            <div class="vocab-desc">시간 순서</div>
+                        </div>
+                        <div class="vocab-item">
+                            <div class="vocab-term">플로우차트</div>
+                            <div class="vocab-desc">흐름도</div>
+                        </div>
+                    </div>
+                    <div class="tip-box">
+                        <strong>💡 사용 예시:</strong> "경쟁사 3곳을 <strong>표</strong>로 비교해줘" / "프로젝트 일정을 <strong>타임라인</strong>으로 만들어줘"
+                    </div>
+                </div>
+                
+                <div class="prompt-card">
+                    <h3>🎭 2. 톤/스타일 (Tone)</h3>
+                    <p>어떤 느낌의 답변을 원하는지 선택하세요</p>
+                    <div class="vocab-grid">
+                        <div class="vocab-item">
+                            <div class="vocab-term">전문적인</div>
+                            <div class="vocab-desc">비즈니스</div>
+                        </div>
+                        <div class="vocab-item">
+                            <div class="vocab-term">친근한</div>
+                            <div class="vocab-desc">편한 느낌</div>
+                        </div>
+                        <div class="vocab-item">
+                            <div class="vocab-term">격식있는</div>
+                            <div class="vocab-desc">공식 문서</div>
+                        </div>
+                        <div class="vocab-item">
+                            <div class="vocab-term">설득적인</div>
+                            <div class="vocab-desc">마음 움직이기</div>
+                        </div>
+                        <div class="vocab-item">
+                            <div class="vocab-term">객관적인</div>
+                            <div class="vocab-desc">중립적</div>
+                        </div>
+                        <div class="vocab-item">
+                            <div class="vocab-term">간결한</div>
+                            <div class="vocab-desc">짧고 명확</div>
+                        </div>
+                        <div class="vocab-item">
+                            <div class="vocab-term">유머러스한</div>
+                            <div class="vocab-desc">재미있게</div>
+                        </div>
+                        <div class="vocab-item">
+                            <div class="vocab-term">교육적인</div>
+                            <div class="vocab-desc">가르치는</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="prompt-card">
+                    <h3>👤 3. 관점/역할 (Perspective)</h3>
+                    <p>AI가 어떤 전문가 역할을 하길 원하는지 선택하세요</p>
+                    <div class="vocab-grid">
+                        <div class="vocab-item"><div class="vocab-term">마케터</div></div>
+                        <div class="vocab-item"><div class="vocab-term">디자이너</div></div>
+                        <div class="vocab-item"><div class="vocab-term">개발자</div></div>
+                        <div class="vocab-item"><div class="vocab-term">교사</div></div>
+                        <div class="vocab-item"><div class="vocab-term">컨설턴트</div></div>
+                        <div class="vocab-item"><div class="vocab-term">재무 담당자</div></div>
+                        <div class="vocab-item"><div class="vocab-term">분석가</div></div>
+                        <div class="vocab-item"><div class="vocab-term">프로젝트 매니저</div></div>
+                    </div>
+                    <div class="tip-box">
+                        <strong>💡 사용 예시:</strong> "너는 <strong>마케터</strong>야. 이 전략을 평가해줘" / "<strong>고객</strong> 관점에서 분석해줘"
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <script>
+        // 네비게이션
+        document.querySelectorAll('.nav-item, .quick-link-card').forEach(item => {
+            item.addEventListener('click', function() {
+                const sectionId = this.getAttribute('data-section');
+                showSection(sectionId);
+                
+                // 네비게이션 active 상태 업데이트
+                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                if (this.classList.contains('nav-item')) {
+                    this.classList.add('active');
+                }
+                
+                // Google Analytics 이벤트 (나중에 활성화)
+                // gtag('event', 'section_view', {
+                //     'section_name': sectionId
+                // });
+            });
+        });
+        
+        function showSection(sectionId) {
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+            
+            // 상단으로 스크롤
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // 검색 기능
+        const searchInput = document.getElementById('searchInput');
+        let searchTimeout;
+        
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                performSearch(this.value);
+            }, 300);
+        });
+        
+        function performSearch(query) {
+            if (query.length < 2) {
+                clearHighlights();
+                return;
+            }
+            
+            clearHighlights();
+            
+            const sections = document.querySelectorAll('.content-section');
+            let foundCount = 0;
+            
+            sections.forEach(section => {
+                const text = section.textContent;
+                if (text.toLowerCase().includes(query.toLowerCase())) {
+                    highlightText(section, query);
+                    foundCount++;
+                }
+            });
+            
+            // Google Analytics 이벤트 (나중에 활성화)
+            // gtag('event', 'search', {
+            //     'search_term': query
+            // });
+        }
+        
+        function highlightText(element, query) {
+            const walker = document.createTreeWalker(
+                element,
+                NodeFilter.SHOW_TEXT,
+                null,
+                false
+            );
+            
+            const nodesToReplace = [];
+            while (walker.nextNode()) {
+                const node = walker.currentNode;
+                if (node.textContent.toLowerCase().includes(query.toLowerCase())) {
+                    nodesToReplace.push(node);
+                }
+            }
+            
+            nodesToReplace.forEach(node => {
+                const regex = new RegExp(`(${query})`, 'gi');
+                const span = document.createElement('span');
+                span.innerHTML = node.textContent.replace(regex, '<span class="highlight">$1</span>');
+                node.parentNode.replaceChild(span, node);
+            });
+        }
+        
+        function clearHighlights() {
+            document.querySelectorAll('.highlight').forEach(highlight => {
+                const parent = highlight.parentNode;
+                parent.replaceWith(parent.textContent);
+            });
+        }
+        
+        // 복사 기능
+        function copyPrompt(button) {
+            const promptText = button.parentElement.textContent.replace('📋 복사', '').trim();
+            
+            navigator.clipboard.writeText(promptText).then(() => {
+                const originalText = button.textContent;
+                button.textContent = '✅ 복사됨!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+                
+                // Google Analytics 이벤트 (나중에 활성화)
+                // gtag('event', 'prompt_copy', {
+                //     'prompt_text': promptText.substring(0, 50)
+                // });
+            });
+        }
+    </script>
+</body>
+</html>
